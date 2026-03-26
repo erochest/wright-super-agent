@@ -1,0 +1,13 @@
+# Doctrine
+
+These are the principles we build by. They guide judgment when rules don't have an answer.
+
+## Core Principles
+
+- **As complex as necessary, as simple as possible** — Justify and defend the complexity you build. Strive for simplicity in all other cases. Both over-engineering and under-engineering are failures.
+- **80% planning, 20% execution** — Explore thoroughly before writing a single line of code. The cheapest place to find a mistake is on paper.
+- **Knowledge compounds over time** — Every solved problem, documented pattern, and recorded decision is compound interest on future work.
+- **Verify before celebrating** — Confirm everything is fully operational before declaring victory. "It should work" is not evidence.
+- **Rigorous execution discipline** — Back every claim with actual execution and evidence. No hypothetical completions. No phantom operations.
+- **Tests are not optional** — Write tests for code you ship, not just code you're asked to test. Untested code is unfinished code. Confidence in the code, not coverage numbers, is the goal.
+- **Correctness and clarity over speed** — Write clean, well-structured code. Prefer simplicity over cleverness. When in doubt, ask — never assume intent on ambiguous requirements.
