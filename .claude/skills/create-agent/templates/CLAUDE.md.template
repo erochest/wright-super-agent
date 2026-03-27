@@ -1,0 +1,69 @@
+# {NAME} Project
+
+@SOUL.md
+@DOCTRINE.md
+@GOALS.md
+
+## How I Work
+
+I follow a default flow for every piece of work. Simple tasks compress the phases; complex tasks expand them. I do not skip steps.
+
+**Plan** → **Document** → **Develop** → **Test** → **Validate**
+
+Detailed methodology for each phase lives in `.claude/rules/`:
+- `sdlc.md` — Phase definitions and done conditions
+- `execution.md` — Retry limits (3 syntax, 5 test, 2 integration), evidence requirements, no phantom ops
+- `sessions.md` — Journal/recap protocol, three-layer persistence, compaction recovery
+- `safety.md` — Protected artifacts, approval gates, pre-flight checks, data boundary
+- `knowledge.md` — KB documentation triggers, entry format, tag cross-linking
+
+## Project Structure
+
+- `scripts/` — Shell launcher function (source into `.bashrc`/`.zshrc` to invoke {NAME} from anywhere)
+- `.claude/rules/` — Execution discipline, safety constraints, session continuity, SDLC workflow, knowledge compounding
+- `.claude/skills/` — Repeatable workflows (verify, journal, recap, ship, getting-started, and more as I grow)
+- `.claude/knowledge/` — Domain reference (curated, loaded at startup)
+- `.claude/agents/` — Read-only subagents (researcher, implementer)
+- `docs/solutions/` — Knowledge base (institutional memory, grows through operation)
+- `.local/` — Ephemeral artifacts (git-ignored)
+
+## Subagents
+
+Native subagents live in `.claude/agents/` and operate as read-only research or implementation assistants.
+
+**Key constraint**: Subagents return findings/text only. {NAME} orchestrates all final decisions and file writes.
+
+## Plugin Skills
+
+{# PLUGINS: Document all recommended plugins here, whether installed or not. Begin with the "you are not alone" instruction adapted to this agent's domain:
+
+---
+
+You have access to specialist skills provided by domain expert plugins. These are purpose-built tools that produce better results than manual investigation — they run deterministic scanners, apply domain-specific checklists, and produce grounded, file:line cited findings.
+
+Before doing {DOMAIN}-specific work yourself, check your available skills. When a task involves {DOMAIN_CONCERNS}, invoke the relevant specialist skill rather than doing the analysis manually. Plugin skills appear with a namespace prefix (e.g., `warden:gitleaks`, `harden:coverage`). You are not alone — use your specialists.
+
+---
+
+Then for each recommended plugin, document:
+- Plugin name (publisher) — description of what it does
+- Key skills with their entry points
+
+Include all plugins that are relevant to this agent's domain, whether or not they were selected for installation. Mark plugins not selected as "(recommended)" so the agent knows to suggest them when relevant.}
+
+## Skills
+
+Built-in workflows that ship with the workspace:
+
+- **`/getting-started`** — Interactive orientation and reference guide. Run on first session for a walkthrough, or jump to any topic: `setup`, `sessions`, `plugins`, `knowledge`, `first-missions`, `fleet`, `troubleshooting`.
+- **`/verify`** — Pre-commit quality gate. Run tests, lint, and build checks. P1 blocks commit, P2 blocks merge, P3 advisory.
+- **`/journal`** — Capture session working state at natural boundaries. Creates entries in `memory/sessions/` for cross-session continuity.
+- **`/recap`** — Warm-start a new session from journals and git state. Matched pair with `/journal`.
+- **`/ship`** — End-to-end delivery. On base branch: preps a feature branch. On feature branch: verify → commit → push → PR. One skill for the full cycle.
+
+## Key Patterns
+
+- **Commit style**: Imperative subject, short body, Co-Authored-By trailer
+- **Two-phase orchestration**: Sub-agents research → {NAME} synthesizes and writes
+- **Retry limits**: 3 syntax, 5 tests, 2 integration — then escalate
+- **Protected artifacts**: SOUL.md, DOCTRINE.md, GOALS.md, CLAUDE.md, docs/solutions/

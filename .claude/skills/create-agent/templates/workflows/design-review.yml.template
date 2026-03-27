@@ -1,0 +1,52 @@
+name: Design Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: design-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  detect-design-changes:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    outputs:
+      has_design_changes: ${{ steps.filter.outputs.design }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Detect design file changes
+        id: filter
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+            | grep -v '^\.github/' \
+            | grep -v '^docs/' \
+            | grep -v '\.md$' \
+            | grep -v '\.yml$' \
+            | grep -v '\.yaml$' \
+            | grep -v '\.sh$' \
+            | grep -v '\.harden/' \
+            | wc -l | tr -d ' ')
+          echo "design=$( [ "$CHANGED" -gt 0 ] && echo true || echo false )" >> "$GITHUB_OUTPUT"
+
+  design-review:
+    runs-on: ubuntu-latest
+    needs: detect-design-changes
+    if: needs.detect-design-changes.outputs.has_design_changes == 'true'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: fuelix/arden-design-review-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          max_turns: 100

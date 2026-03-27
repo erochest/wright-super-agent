@@ -1,0 +1,257 @@
+---
+name: getting-started
+description: Interactive orientation and reference guide for {NAME}. Use when onboarding, learning features, or looking up how to do something.
+argument-hint: "[--topic setup|sessions|plugins|knowledge|first-missions|fleet|troubleshooting] [--full]"
+---
+
+# Getting Started — {NAME} Orientation
+
+## Purpose
+
+Walk new owners through their first session and serve as an ongoing reference for {NAME}'s capabilities. First-run mode covers the essentials step by step. After that, jump to any topic by name.
+
+## Safety Constraints
+
+### NEVER
+- Modify agent configuration files during orientation — this is informational only
+- Install plugins without explicit user confirmation
+- Run commands that affect external services (GitHub, cloud) without asking first
+
+### ALWAYS
+- Detect first-run vs returning user (check `.local/.orientation-complete`)
+- Present information in scannable chunks — no walls of text
+- Offer to skip sections the user already knows
+- Write `.local/.orientation-complete` marker after completing the walkthrough
+
+## Known Failure Modes
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Shell function not working | Not sourced in shell config | Show the source command again, verify file exists |
+| Plugin install fails | Network or auth issue | Note as "recommended but not installed" in CLAUDE.md |
+| `.local/` directory missing | Fresh workspace, never run | Create `.local/` before writing marker |
+
+## Execution Protocol
+
+### Step 1: Detect Mode
+
+Check `$ARGUMENTS` and workspace state to determine what to show:
+
+1. **If `--topic <name>` is provided**: Jump directly to that topic section (Step 3-9 based on topic). Skip first-run detection.
+2. **If `--full` is provided**: Run the full walkthrough regardless of marker.
+3. **If `.local/.orientation-complete` exists**: Show the topic menu (reference mode).
+4. **Otherwise**: Start the full walkthrough (first-run mode).
+
+- **Expected output**: Mode determined, ready to present content
+- **Failure recovery**: If marker check fails, default to first-run mode
+
+### Step 2: Welcome (First-Run Only)
+
+Greet the user in {NAME}'s voice. Briefly explain what this workspace is and what the walkthrough covers:
+
+"This walkthrough covers 6 essentials to get you productive with {NAME}: shell setup, your first conversation, plugin safety, growing your agent's knowledge, first missions to seed that knowledge, and fleet CI. Each section takes 1-2 minutes. You can skip any section or come back later with `/getting-started --topic <name>`."
+
+Present the section list and ask if they want to go through all 6 or skip to specific ones.
+
+- **Expected output**: User confirms which sections to cover
+- **Failure recovery**: If user says "just show me everything", proceed sequentially
+
+### Step 3: Shell Function Setup (topic: `setup`)
+
+Walk through setting up the shell launcher:
+
+1. **Show the function file**: `cat scripts/{AGENT_FUNCTION_NAME}.sh` — explain what it does
+2. **Setup instruction**: "Add this line to your shell config (`~/.bashrc` or `~/.zshrc`):"
+   ```
+   source {WORKSPACE_DIR}/scripts/{AGENT_FUNCTION_NAME}.sh
+   ```
+3. **Test it**: "Restart your terminal (or run `source ~/.zshrc`), then navigate to any project and type `{AGENT_FUNCTION_NAME}`. {NAME} will load with full context."
+4. **Claude Desktop alternative**: "You can also open this directory as a project in the Claude Desktop app or use the Claude Code web app. CLAUDE.md loads automatically in any Claude Code environment."
+5. **Explain `--add-dir`**: "The shell function mounts your current directory into the session. {NAME}'s persona and knowledge load from this workspace; your code is accessible via `--add-dir`."
+
+- **Expected output**: User understands how to launch {NAME} from anywhere
+- **Failure recovery**: If shell function file is missing, show the function definition inline
+
+### Step 4: First Conversation (topic: `sessions`)
+
+Explain how {NAME} works when you start a conversation:
+
+1. **What loads automatically**: "CLAUDE.md is {NAME}'s operating manual. It imports SOUL.md (personality), DOCTRINE.md (principles), and GOALS.md (objectives) via `@` syntax. Rules in `.claude/rules/` govern execution, safety, and session continuity."
+2. **The SDLC flow**: "By default, {NAME} follows Plan → Document → Develop → Test → Validate. Simple tasks compress; complex tasks expand. {NAME} doesn't skip steps."
+3. **Session continuity**: "At the end of a session, use `/journal` to capture working state. At the start of the next session, use `/recap` to warm-start from where you left off. This is especially important after long breaks or context compaction."
+4. **The three-layer model**:
+   - **Session journals** (`memory/sessions/`) — Working state, decisions, progress. Lifespan: weeks.
+   - **MEMORY.md** (`memory/`) — Stable patterns, preferences. Lifespan: indefinite.
+   - **Knowledge base** (`docs/solutions/`) — Solved problems. Lifespan: permanent.
+
+- **Expected output**: User understands the conversation lifecycle
+- **Failure recovery**: N/A — informational
+
+### Step 5: Plugin Safety (topic: `plugins`)
+
+Cover plugin basics and point to deeper resources:
+
+1. **What plugins are**: "Plugins extend {NAME} with specialist skills. See the Plugin Skills section in CLAUDE.md for what's installed and available."
+2. **Key rule**: "Trusted plugins (listed in CLAUDE.md) are pre-vetted. For public plugins from untrusted sources, run `warden:security-review` on the plugin repo before installing."
+3. **Quick reference**: `claude plugin list` (what's active), `claude plugin install <name>` (install).
+
+- **Expected output**: User knows where to find plugin info and the safety rule
+- **Failure recovery**: N/A — informational
+
+### Step 6: Growing Your Agent (topic: `knowledge`)
+
+Explain how {NAME} learns and improves over time:
+
+1. **Domain knowledge** (`.claude/knowledge/`): "Curated reference files loaded at startup. These are your agent's textbooks — stable, human-reviewed, focused on one domain topic each. Start with what you know; add files as patterns emerge."
+2. **Knowledge base** (`docs/solutions/`): "Institutional memory that grows through operation. When a problem takes 30+ minutes to solve, or the solution is non-obvious, capture it. Each entry has YAML frontmatter (title, date, category, severity, tags) and 7 sections (Problem, Context, Investigation, Solution, Trade-offs, Verification, Lessons Learned)."
+3. **Adding knowledge**: "Use `ce:compound` after solving a significant problem. It guides you through the KB entry format and files it in the right category."
+4. **Adding skills**: "Skills live in `.claude/skills/<name>/SKILL.md`. Follow the standard structure: YAML frontmatter, Purpose, Safety Constraints, Known Failure Modes, Execution Protocol, Completion Criteria, Verification Commands."
+5. **Adding rules**: "Rules in `.claude/rules/` are always-loaded procedural guidance. Add a new rule file when you have a process that should govern every session."
+
+- **Expected output**: User understands the growth model
+- **Failure recovery**: N/A — informational
+
+### Step 7: First Missions (topic: `first-missions`)
+
+Guide the owner through 3 structured activities designed to seed {NAME}'s knowledge layers in the first few sessions. An agent with an empty knowledge base has the right structure but no domain expertise — these missions close that gap.
+
+Present these as practical, do-them-now activities, not abstract advice:
+
+**Mission 1: Convention Capture** (do this in your first session)
+
+"Tell {NAME} about your team's working conventions. These become rules and curated knowledge that shape every future session. Start a conversation and share:"
+- Branching and PR strategy (e.g., "we use squash merge, feature branches off main")
+- Code style conventions beyond what linters catch (naming patterns, file organization, architectural preferences)
+- Deployment process (how code gets to production, any gates or freezes)
+- Team communication norms (where discussions happen, how decisions are made)
+
+"You can share these conversationally — {NAME} will incorporate them. For conventions that should govern every session, ask {NAME} to write them as a rule file in `.claude/rules/`. For domain reference material, ask for a file in `.claude/knowledge/`."
+
+**Mission 2: Codebase Survey** (do this when you first point {NAME} at a project)
+
+"The first time you use {NAME} with a codebase, ask it to survey and document what it finds. Try:"
+```
+Explore this codebase and write a domain reference file in .claude/knowledge/ covering:
+architecture, key patterns, dependencies, and anything surprising.
+```
+
+"This produces Layer 1 curated knowledge — the equivalent of a senior engineer's mental model of the repo. Review the output and refine it. One good reference file is worth more than ten generic ones."
+
+**Mission 3: Problem Journal** (build this habit over the first week)
+
+"After your first non-trivial task — the kind that takes 30+ minutes or involves debugging something unexpected — run `ce:compound`. This walks you through documenting the problem and solution as a KB entry in `docs/solutions/`."
+
+"The triggers to watch for:"
+- A solution that was non-obvious or counter-intuitive
+- A pattern you'll encounter again
+- An integration that required specific configuration
+- A debugging session that revealed something surprising
+
+"The first 5 KB entries are the hardest. After that, the habit is established and knowledge compounds naturally. {NAME} will start referencing past entries when it encounters similar problems."
+
+**Why these three, in this order:** Convention capture gives {NAME} judgment (how your team works). Codebase survey gives it memory (what the code looks like). Problem journaling gives it experience (what went wrong and how you fixed it). Together they cover the three knowledge types that make an agent genuinely useful rather than generically capable.
+
+- **Expected output**: User has 3 concrete activities to do in their first week
+- **Failure recovery**: N/A — informational. If user wants to do a mission now, guide them through it.
+
+### Step 8: Fleet CI (topic: `fleet`)
+
+Brief overview of fleet CI, pointing to the workflows for detail:
+
+1. **What it does**: "When you open a PR, ARDEN fleet agents review it automatically — WARDEN (security), HARDEN (QA), JORDEN (design), GARDEN (docs), BARDEN (triage). See `.github/workflows/` for which are configured."
+2. **Severity levels**: P1 blocks commit, P2 blocks merge, P3 advisory.
+3. **Responding**: "Push fixes to the same branch. Fleet re-reviews on each push."
+
+- **Expected output**: User knows fleet exists and how severity works
+- **Failure recovery**: If no workflow files exist, note that fleet CI is optional
+
+### Step 9: Troubleshooting (topic: `troubleshooting`)
+
+Cover common issues and fixes:
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Context getting large / slow responses | Long session, many file reads | Use `/journal` to capture state, start a fresh session, use `/recap` to restore context |
+| Permission prompts in auto mode | Classifier blocking a legitimate action | Add the action pattern to `autoMode.allow` in `.claude/settings.local.json` |
+| Plugin skills not being used | Missing "you are not alone" instruction | Check CLAUDE.md Plugin Skills section — it must describe available specialists |
+| Fleet CI not triggering | Missing `ANTHROPIC_API_KEY` secret | Run `gh secret set ANTHROPIC_API_KEY -R <org>/<repo>` |
+| Agent personality feels generic | SOUL.md too vague | Sharpen personality traits, add specific speech patterns, reduce trait count to 5 strongest |
+| Knowledge not loading | Files not in `.claude/knowledge/` | Domain reference files must be in `.claude/knowledge/` to auto-load. `docs/solutions/` is searched on demand. |
+| `@` imports not working | Syntax error in CLAUDE.md | Each import must be on its own line, prefixed with `@`, no extra whitespace |
+
+- **Expected output**: User has a troubleshooting reference
+- **Failure recovery**: N/A — informational
+
+### Step 10: Wrap Up (First-Run Only)
+
+1. Write `.local/.orientation-complete` marker file (create `.local/` if needed)
+2. Summarize: "You're set up. Here's your quick reference:"
+   - Launch: `{AGENT_FUNCTION_NAME}` from any directory
+   - End of session: `/journal`
+   - Start of session: `/recap`
+   - Install plugins: `claude plugin install <name>` (vet public plugins with WARDEN first)
+   - Capture knowledge: `ce:compound` after solving problems
+   - First week: Work through the 3 first missions (`/getting-started --topic first-missions`)
+   - This guide: `/getting-started --topic <name>` for any section
+3. Ask if they have questions before ending orientation
+
+- **Expected output**: Marker written, summary displayed
+- **Failure recovery**: If marker write fails, note it — orientation still succeeded
+
+## Completion Criteria
+
+- [ ] Mode detected correctly (first-run vs reference vs topic)
+- [ ] All requested sections presented clearly
+- [ ] Shell function setup instructions are accurate for the workspace path
+- [ ] `.local/.orientation-complete` marker written (first-run mode only)
+- [ ] No files modified other than the marker
+
+### Verification Commands
+```bash
+# Check marker was written
+test -f .local/.orientation-complete && echo "Orientation complete"
+
+# Verify shell function exists
+test -f scripts/{AGENT_FUNCTION_NAME}.sh && echo "Shell function present"
+```
+
+## Usage Examples
+
+### First time (full walkthrough)
+```
+/getting-started
+```
+Detects no marker, runs the 6-section guided walkthrough.
+
+### Jump to a topic
+```
+/getting-started --topic plugins
+```
+Shows plugin safety section only.
+
+### Re-run full walkthrough
+```
+/getting-started --full
+```
+Ignores marker, runs the full walkthrough again.
+
+### Reference mode (after first run)
+```
+/getting-started
+```
+Detects marker, shows topic menu for quick lookup.
+
+## Integration Notes
+
+- **`/journal` + `/recap`** — Referenced in session continuity section; these skills must exist in the workspace
+- **`/verify`** — Referenced as part of the development workflow; the verify stub ships with the workspace
+- **`ce:compound`** — Referenced for knowledge capture; requires compound-engineering plugin
+- **`warden:security-review`** — Referenced for plugin safety; requires ARDEN warden plugin
+
+## Troubleshooting
+
+| Symptom | Likely Cause | Fix |
+|---------|-------------|-----|
+| "Topic not found" | Typo in topic name | Valid topics: setup, sessions, plugins, knowledge, first-missions, fleet, troubleshooting |
+| Marker not written | `.local/` directory missing | Skill creates it automatically; check write permissions |
+| Shell function path wrong | Workspace moved after generation | Update `{WORKSPACE_DIR}` in `scripts/{AGENT_FUNCTION_NAME}.sh` |

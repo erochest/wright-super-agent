@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Profile Theme Configuration",
+  "description": "Defines the visual skin for an agent profile card. Structure is constant; theme adapts to archetype.",
+  "type": "object",
+  "required": ["mode", "colors", "fonts", "radii", "sections", "strip", "icons", "barStyle"],
+  "properties": {
+    "mode": {
+      "enum": ["dark", "light"],
+      "description": "Controls default text color logic and contrast direction"
+    },
+    "colors": {
+      "type": "object",
+      "description": "CSS color values — injected as custom properties on :root",
+      "required": ["bg", "card", "cardBorder", "accent", "textPrimary", "textBody", "textDim", "textLabel", "blockBg", "barBg", "stripBg"],
+      "properties": {
+        "bg":          { "type": "string", "description": "Page background" },
+        "card":        { "type": "string", "description": "Card background" },
+        "cardBorder":  { "type": "string", "description": "Card border" },
+        "accent":      { "type": "string", "description": "Primary accent — bars, borders, highlights" },
+        "secondary":   { "type": "string", "description": "Optional secondary accent. Falls back to accent." },
+        "textPrimary": { "type": "string", "description": "Name, headings" },
+        "textBody":    { "type": "string", "description": "Quotes, descriptions" },
+        "textDim":     { "type": "string", "description": "Scenario labels, footer" },
+        "textLabel":   { "type": "string", "description": "Section titles, trait labels, badge text" },
+        "blockBg":     { "type": "string", "description": "Speech blocks, goal cards" },
+        "barBg":       { "type": "string", "description": "Trait bar background track" },
+        "stripBg":     { "type": "string", "description": "Top strip background" }
+      }
+    },
+    "fonts": {
+      "type": "object",
+      "description": "Font stacks — display for name/titles, mono for labels/data, body for prose",
+      "required": ["display", "mono", "body"],
+      "properties": {
+        "display": { "type": "string", "description": "Agent name, goal titles. Include full fallback chain." },
+        "mono":    { "type": "string", "description": "Badges, section titles, trait labels" },
+        "body":    { "type": "string", "description": "Body text, speech quotes, goal details" }
+      }
+    },
+    "radii": {
+      "type": "object",
+      "description": "Border radius scale — controls visual sharpness/softness",
+      "required": ["card", "badge", "block"],
+      "properties": {
+        "card":  { "type": "string", "description": "Card container radius" },
+        "badge": { "type": "string", "description": "Badge pill radius" },
+        "block": { "type": "string", "description": "Speech/goal block radius" }
+      }
+    },
+    "sections": {
+      "type": "object",
+      "description": "Section labels — themed naming that reinforces the archetype",
+      "required": ["traits", "voice", "goals"],
+      "properties": {
+        "traits": { "type": "string", "description": "e.g., PERSONALITY, EVOLUTION PROFILE, /* traits */" },
+        "voice":  { "type": "string", "description": "e.g., VOICE SAMPLE, 02 — TESTIMONY" },
+        "goals":  { "type": "string", "description": "e.g., OBJECTIVES, // objectives" }
+      }
+    },
+    "strip": {
+      "type": "object",
+      "description": "Top strip — diagnostic bar, bio-strip, or terminal prompt",
+      "required": ["type"],
+      "properties": {
+        "type":     { "enum": ["text", "gradient", "solid"], "description": "Strip rendering mode" },
+        "left":     { "type": "string", "description": "Left-aligned text (type: text)" },
+        "right":    { "type": "string", "description": "Right-aligned text (type: text)" },
+        "gradient": { "type": "string", "description": "CSS gradient value (type: gradient)" },
+        "color":    { "type": "string", "description": "Solid color (type: solid)" }
+      }
+    },
+    "icons": {
+      "type": "object",
+      "description": "Lucide icon names for badge glyphs",
+      "required": ["domain", "authority", "trust"],
+      "properties": {
+        "domain":    { "type": "string", "description": "Domain badge icon — e.g., layers, server, shield-alert" },
+        "authority": { "type": "string", "description": "Authority model icon — e.g., hammer, users, shield" },
+        "trust":     { "type": "string", "description": "Trust level icon — e.g., lock, shield, key" }
+      }
+    },
+    "barStyle": {
+      "type": "object",
+      "description": "Trait bar fill style",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["solid", "gradient"], "description": "Bar fill rendering mode" },
+        "fill": { "type": "string", "description": "CSS color or gradient for the bar fill" }
+      }
+    },
+    "headerImage": {
+      "type": "object",
+      "description": "Optional header image sizing",
+      "properties": {
+        "height": { "type": "string", "description": "CSS height — e.g., 120px, 8rem" }
+      }
+    }
+  }
+}

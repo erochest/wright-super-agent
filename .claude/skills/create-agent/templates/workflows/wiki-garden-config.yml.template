@@ -1,0 +1,4 @@
+# GARDEN wiki sync configuration
+required_pages:
+  - Home
+  - Getting-Started

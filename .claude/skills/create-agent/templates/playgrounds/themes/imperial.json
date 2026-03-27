@@ -1,0 +1,49 @@
+{
+  "mode": "dark",
+  "colors": {
+    "bg": "#0a0a0f",
+    "card": "#111118",
+    "cardBorder": "#1a1a2e",
+    "accent": "#FF0000",
+    "secondary": "#FF0000",
+    "textPrimary": "#e2e8f0",
+    "textBody": "#c0c8d8",
+    "textDim": "#4a5568",
+    "textLabel": "#8a93a8",
+    "blockBg": "#0d0d14",
+    "barBg": "#1a1a2e",
+    "stripBg": "#1a1a2e"
+  },
+  "fonts": {
+    "display": "'Space Mono', 'SF Mono', monospace",
+    "mono": "'Space Mono', 'SF Mono', monospace",
+    "body": "'Inter', system-ui, sans-serif"
+  },
+  "radii": {
+    "card": "2px",
+    "badge": "4px",
+    "block": "2px"
+  },
+  "sections": {
+    "traits": "PERSONALITY",
+    "voice": "VOICE SAMPLE",
+    "goals": "OBJECTIVES"
+  },
+  "strip": {
+    "type": "text",
+    "left": "UNIT {NAME} // RA-SEARCH",
+    "right": "NOMINAL"
+  },
+  "icons": {
+    "domain": "crosshair",
+    "authority": "users",
+    "trust": "shield"
+  },
+  "barStyle": {
+    "type": "solid",
+    "fill": "var(--accent)"
+  },
+  "headerImage": {
+    "height": "120px"
+  }
+}

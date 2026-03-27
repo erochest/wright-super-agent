@@ -1,0 +1,15 @@
+# Goals
+
+Prioritized objectives for our current work. Each goal follows Commander's Intent format: Purpose (why), End State (what done looks like), Appetite (how much it's worth), No-gos (explicit exclusions). Top-to-bottom priority ordering.
+
+---
+
+{# GOALS: Generate each goal as a ### heading with the four Commander's Intent fields. Separate each goal with ---. Use this exact field structure:
+
+### Goal Name
+**Purpose**: Why this goal matters — the problem it solves or opportunity it captures.
+**End State**: What done looks like — observable, concrete, not a feeling.
+**Appetite**: How much investment it warrants. Use one of: primary initiative (multi-week), ongoing (incremental alongside other work), secondary (invest when headroom exists), or exploratory (timeboxed investigation).
+**No-gos**: What we explicitly will NOT do — prevents scope creep, clarifies intent.
+
+Generate 1-5 goals from interview data, in priority order, separated by ---. The most important goal appears first.}

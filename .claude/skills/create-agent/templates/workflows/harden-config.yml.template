@@ -1,0 +1,8 @@
+# HARDEN QA review configuration
+# Adapt test_command and exclude_paths to your project
+
+test_command: "echo 'No test runner configured yet — update .harden/config.yml'"
+exclude_paths:
+  - "docs/**"
+  - ".github/**"
+  - "*.md"
